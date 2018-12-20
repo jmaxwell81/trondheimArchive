@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>true</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>false</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>u_tree_removal_enquiry</collection>
+        <condition/>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition table="u_tree_removal_enquiry">u_draft=false^EQ<item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </filter_condition>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Copy_to_Archive_update</name>
+        <order>100</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+	
+	//sys_id holders
+	var wor_sysid = "";
+	var con_sysid = "";
+	var org_sysid = "";
+	var loc_sysid = "";
+	var cas_sysid = "";
+	
+	// if record exist holder
+	var wor_sysid_exist = false;
+	var con_sysid_exist = false;
+	var org_sysid_exist = false;
+	var loc_sysid_exist = false;
+	var cor_exist = false;
+	
+	//arhive tables
+	var con = new GlideRecord("x_tkcsc_archive_contact_person");
+	var org = new GlideRecord("x_tkcsc_archive_organisation");
+	var wor = new GlideRecord("x_tkcsc_archive_caseworker");
+	var loc = new GlideRecord("x_tkcsc_archive_location");
+	var cas = new GlideRecord("x_tkcsc_archive_case_files");
+	
+	cas.addQuery("u_original_number", current.number);
+	cas.query();
+	if (cas.next()){
+		cas_sysid = cas.sys_id;
+		cor_exist = true;
+	}
+	
+	
+	var oriwor = new GlideRecord('sys_user');
+	if (current.assigned_to){
+		oriwor.get(current.assigned_to);
+		//Check if a record already exist in archive with same sysid
+		wor.addQuery("u_original_sysid", current.assigned_to);
+		wor.query();
+		if (wor.next()){
+			wor_sysid = wor.sys_id;
+			wor_sysid_exist = true;
+		}
+	}
+	
+	var cust_org = new GlideRecord("core_company");
+	if (current.u_customer_organization){
+		cust_org.get(current.u_customer_organization);
+		address = cust_org.street;
+		//Check if a record already exist in archive with same sysid
+		org.addQuery("u_original_sysid", current.u_customer_organization);
+		org.query();
+		if (org.next()){
+			org_sysid = org.sys_id;
+			org_sysid_exist = true;
+		}
+	}
+	
+	var cust_con = new GlideRecord ("u_customer_contact");
+	if (current.u_customer_contact){
+		cust_con.get(current.u_customer_contact);
+		//Check if a record already exist in archive with same sysid
+		con.addQuery("u_original_sysid", current.u_stomer_contact);
+		con.query();
+		if (con.next()){
+			con_sysid = con.sys_id;
+			con_sysid_exist = true;
+		}
+	}
+	
+	var org_loc = new GlideRecord("cmn_location");
+	gs.debug("current.location "+ current.location);
+	if (current.location){
+		org_loc.get(current.location);
+		//Check if a record already exist in archive with same sysid
+		loc.addQuery("original_sysid", current.location);
+		gs.error("current.location "+ current.location);
+		loc.query();
+		if (loc.next()){
+			loc_sysid = loc.sys_id;
+			loc_sysid_exist = true;
+		}
+	}
+	
+	var loc_name = "";
+	if (org_loc.name) loc_name = org_loc.name;
+		var c_title = "Trehenvendelse: "+current.u_reason.getChoiceValue()+" - "+loc_name;
+	
+	
+	// Contact Person
+	if(current.u_customer_contact.changes() && !con_sysid_exist){
+		con.initialize();
+		con.u_original_sysid = current.u_customer_contact.toString();
+		con.first_name = cust_con.first_name;
+		con.last_name = cust_con.last_name;
+		con.email = cust_con.email;
+		con.mobile_phone = cust_con.mobile_phone.toString();
+		con.personal_number = "personal_number";
+		con.zip = cust_con.zip;
+		con.street = cust_con.street;
+		con.city = cust_con.city;
+		con_sysid = con.insert();
+	}
+	
+	// Organisation
+	if(current.u_customer_organization.changes() && !org_sysid_exist){
+		org.initialize();
+		org.u_original_sysid = current.u_customer_organization.toString();
+		org.u_name = cust_org.name;
+		org.u_organisation_number =cust_org.u_orgnumber;
+		var address = "";
+		if (cust_org.zip) address += ", "+cust_org.zip;
+			if (cust_org.city) address += ", "+cust_org.city;
+			org.u_address =address;
+		org_sysid = org.insert();
+	}
+	
+	// Caseworker
+	if(current.assigned_to.changes() && !wor_sysid_exist){
+		wor.initialize();
+		wor.u_original_sysid = current.assigned_to.toString();
+		wor.first_name = oriwor.first_name;
+		wor.last_name = oriwor.last_name;
+		wor.u_identity = oriwor.user_name;
+		var dep = new GlideRecord("cmn_department");
+		dep.get(oriwor.department);
+		wor.department = dep.sys_id;
+		wor_sysid = wor.insert();
+	}
+	// Location
+	if(current.location.changes() && !loc_sysid_exist){
+		loc.initialize();
+		loc.original_sysid = current.location.toString();
+		loc.u_name = org_loc.name;
+		var address_loc = org_loc.street;
+		if (cust_org.zip) address_loc += ", "+org_loc.zip;
+			if (cust_org.city) address_loc += ", "+org_loc.city;
+			loc.u_address = address_loc;
+		loc.u_longitude = org_loc.longitude;
+		loc.u_latitude = org_loc.latitude;
+		loc.u_gnr = org_loc.u_gnr;
+		loc.u_bnr = org_loc.u_bnr;
+		loc_sysid = loc.insert();
+	}
+	
+	// Case Files - only UPDATE
+	if (current.u_stage.changes() || current.assigned_to.changes() || current.location.changes()){
+		
+		var tre = new GlideRecord('u_tree_removal_enquiry');
+		var cas_array = [];
+		tre.addQuery('parent', current.sys_id);
+		tre.query();
+		while(tre.next()){
+			cas_array.push(tre.getDisplayValue());
+		}
+		cas.u_cross_reference = cas_array.join(',');
+		cas.u_original_number = current.number;
+		cas.u_caseworker = wor_sysid;
+		cas.u_archive_location = loc_sysid;
+		cas.u_case_type = "Trehenvendelse";
+		cas.closed_at = current.closed_at;
+		cas.opened_at = current.opened_at;
+		cas.state = current.u_stage;
+		cas.title = c_title;
+		cas_sysid = cas.update();
+	}
+	
+	// Correspondence
+	if(current.u_melding_til_kunde.changes() || !cor_exist)
+		{
+		var cor = new GlideRecord("x_tkcsc_archive_correspondence");
+		cor.initialize();
+		cor.u_title = c_title;
+		var desc = current.u_melding_til_kunde;
+		if (!cor_exist) desc = current.description;
+			cor.description = desc;
+		cor.u_direction = current.contact_type;
+		cor.u_send_date = current.opened_at;
+		cor.u_caseworker = wor_sysid;
+		cor.u_case = cas_sysid;
+		cor.u_contact_person = con_sysid;
+		cor.u_organisation = org_sysid;
+		var cor_sysid = cor.insert();
+		// Correspondence Attachments - copy all
+		//var att = new GlideSysAttachment.copy(current.sys_class_name, current.sys_id, 'x_tkcsc_archive_correspondence', cor_sysid);
+		
+		//COPY SPECIFIC ATTACHMENTS
+		copySpecificAttachments(current.u_attachments_to_send, 'x_tkcsc_archive_correspondence', cor_sysid);
+			
+		cor.u_ecc_ready = true;
+		cor.update();
+	}
+	
+	// Note
+	if(current.work_notes.changes())
+		{
+		var note = new GlideRecord("x_tkcsc_archive_note");
+		note.initialize();
+		var entry = current.work_notes.getJournalEntry(1);
+		note.description = entry;
+		entry.split(" - ");
+		note.opened_at = entry[0];
+		note.u_case_files = cas_sysid;
+		note.u_caseworker = wor_sysid;
+		var note_sysid = note.insert();
+		// Note Attachments - copy all
+		//var att2 = new GlideSysAttachment.copy(current.sys_class_name, current.sys_id, 'x_tkcsc_archive_note', note_sysid);
+		
+		//COPY SPECIFIC ATTACHMENTS
+		copySpecificAttachments(current.u_attachments_to_send, 'x_tkcsc_archive_note', note_sysid);
+			
+		note.u_ecc_ready = true;
+		note.update();
+	}
+
+})(current, previous);
+
+
+
+
+//COPY SPECIFIC ATTACHMENTS
+//GET ATTACHMENTS SELECTED LIST
+function copySpecificAttachments(check_list, to_table, to_sysid){
+	if(check_list){
+		var at_list = check_list;
+		var at_array =	at_list.split(',');
+		
+		//Only get attachments related to the record
+		var att_r = new GlideRecord('sys_attachment');
+		att_r.addQuery('table_sys_id', current.sys_id);
+		att_r.query();
+		
+		for(var i=0; i < at_array.length; i++){
+			att_r.get(at_array[i]);	
+			copyAttachments(current.sys_class_name, current.sys_id, to_table, to_sysid, att_r.file_name);	
+		}
+	}
+}
+
+
+//REWRITTEN FOR SPECIFIC ATTACHMENTS CHOSEN FROM THE LIST - WORKS IN SCOPED APPLICATION
+function copyAttachments(sourceTable, sourceID, targetTable, targetID, filename) {
+	var att = new GlideRecord("sys_attachment");
+	var userImagePrefix = "ZZ_YY";
+	var tables = [sourceTable, userImagePrefix + sourceTable];
+	att.addQuery("table_name", tables);
+	att.addQuery("table_sys_id", sourceID);
+	att.addQuery('file_name', filename);
+	att.query();
+	gs.info(att.getEncodedQuery());
+	gs.info("copying " + att.getRowCount());
+	
+	while (att.next()) {
+		//copy attachment record
+		var oldSysID = att.getUniqueValue();
+		var targetName = targetTable;
+		var sourceName = att.getValue("table_name");
+		if (sourceName.startsWith(userImagePrefix))
+			targetName = userImagePrefix + targetTable;
+		
+		att.setValue("table_name", targetName);
+		att.setValue("table_sys_id", targetID);
+		var newSysID = att.insert();
+		
+		//copy attachment doc records
+		var doc = new GlideRecord("sys_attachment_doc");
+		doc.addQuery("sys_attachment", oldSysID);
+		doc.query();
+		while (doc.next()) {
+			doc.setValue("sys_attachment", newSysID);
+			doc.insert();
+		}
+	}
+}
+]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>dag.kvarme@symfoni-esm.com</sys_created_by>
+        <sys_created_on>2017-06-01 13:27:57</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>d7ed38dedb0fb20072ccb34ffe96199f</sys_id>
+        <sys_mod_count>56</sys_mod_count>
+        <sys_name>Copy_to_Archive_update</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+        <sys_update_name>sys_script_d7ed38dedb0fb20072ccb34ffe96199f</sys_update_name>
+        <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+        <sys_updated_on>2017-06-07 09:24:17</sys_updated_on>
+        <template/>
+        <when>after</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=d7ed38dedb0fb20072ccb34ffe96199f"/>
+    <sys_translated_text action="INSERT_OR_UPDATE">
+        <documentkey>d7ed38dedb0fb20072ccb34ffe96199f</documentkey>
+        <fieldname>message</fieldname>
+        <language>nb</language>
+        <sys_created_by>dag.kvarme@symfoni-esm.com</sys_created_by>
+        <sys_created_on>2017-06-01 13:27:57</sys_created_on>
+        <sys_id>93ed38dedb0fb20072ccb34ffe9619a0</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>dag.kvarme@symfoni-esm.com</sys_updated_by>
+        <sys_updated_on>2017-06-01 13:27:57</sys_updated_on>
+        <tablename>sys_script</tablename>
+        <value/>
+    </sys_translated_text>
+</record_update>

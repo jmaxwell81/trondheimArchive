@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="Caseworkers" max_length="40" name="x_tkcsc_archive_caseworkers" type="collection">
+        <element label="Department" max_length="32" name="u_department" reference="kb_department" type="reference"/>
+        <element label="First_name" max_length="100" name="u_first_name" type="string"/>
+        <element label="Identity" max_length="100" name="u_identity" type="string"/>
+        <element label="Last name" max_length="100" name="u_last_name" type="string"/>
+        <element label="Original sysid" max_length="100" name="u_original_sysid" type="string"/>
+        <index name="index">
+            <element name="u_department"/>
+        </index>
+    </element>
+</database>

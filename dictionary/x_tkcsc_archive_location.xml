@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="Location" max_length="40" name="x_tkcsc_archive_location" type="collection">
+        <element label="Original sysid" max_length="100" name="original_sysid" type="string"/>
+        <element label="Address" max_length="100" name="u_address" type="string"/>
+        <element label="Bnr" max_length="100" name="u_bnr" type="string"/>
+        <element label="Case" max_length="32" name="u_case" reference="x_tkcsc_archive_case_files" type="reference"/>
+        <element label="Gnr" max_length="100" name="u_gnr" type="string"/>
+        <element label="Latitude" max_length="40" name="u_latitude" type="float"/>
+        <element label="Longitude" max_length="40" name="u_longitude" type="float"/>
+        <element label="Name" max_length="100" name="u_name" type="string"/>
+        <index name="index">
+            <element name="u_case"/>
+        </index>
+    </element>
+</database>

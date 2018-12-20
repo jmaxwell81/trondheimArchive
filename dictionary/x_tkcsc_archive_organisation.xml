@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="Organisation" max_length="40" name="x_tkcsc_archive_organisation" type="collection">
+        <element label="Address" max_length="100" name="u_address" type="string"/>
+        <element label="Correspondence" max_length="32" name="u_correspondence" reference="x_tkcsc_archive_correspondence" type="reference"/>
+        <element label="Name" max_length="100" name="u_name" type="string"/>
+        <element label="Organisation number" max_length="100" name="u_organisation_number" type="string"/>
+        <element label="Original sysid" max_length="100" name="u_original_sysid" type="string"/>
+        <index name="index">
+            <element name="u_correspondence"/>
+        </index>
+    </element>
+</database>

@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>true</action_insert>
+        <action_query>false</action_query>
+        <action_update>false</action_update>
+        <active>false</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>u_tree_removal_enquiry</collection>
+        <condition/>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition/>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Copy_to_Archive</name>
+        <order>10</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+	
+	var org_sysid = "";
+	var con_sysid = "";
+	var wor_sysid = "";
+	var loc_sysid = "";
+	
+	
+	// Contact Person
+	var con = new GlideRecord("x_tkcsc_archive_contact_person");
+	var cust_con = new GlideRecord ("u_customer_contact");
+	if (current.u_customer_contact){
+		cust_con.get(current.u_customer_contact);
+		con.initialize();
+		con.u_original_sysid = current.u_customer_contact.toString();
+		con.first_name = cust_con.first_name;
+		con.last_name = cust_con.last_name;
+		con.email = cust_con.email;
+		con.mobile_phone = cust_con.mobile_phone;
+		con.personal_number = "personal_number";
+		con.zip = cust_con.zip;
+		con.street = cust_con.street;
+		con.city = cust_con.city;
+		con_sysid = con.insert();
+	}
+	
+	// Organisation
+	var org = new GlideRecord("x_tkcsc_archive_organisation");
+	var cust_org = new GlideRecord("core_company");
+	if (current.u_customer_organization){
+		cust_org.get(current.u_customer_organization);
+		org.initialize();
+		org.u_original_sysid = current.u_customer_organization.toString();
+		org.u_name = cust_org.name;
+		org.u_organisation_number =cust_org.u_orgnumber;
+		var address = cust_org.street;
+		if (cust_org.zip) address += ", "+cust_org.zip;
+			if (cust_org.city) address += ", "+cust_org.city;
+			org.u_address =address;
+		org_sysid = org.insert();
+	}
+	
+	// Caseworker
+	var wor = new GlideRecord("x_tkcsc_archive_caseworker");
+	var oriwor = new GlideRecord('sys_user');
+	if (current.assigned_to){
+		oriwor.get(current.assigned_to);
+		wor.initialize();
+		wor.u_original_sysid = current.assigned_to.toString();
+		wor.first_name = oriwor.first_name;
+		wor.last_name = oriwor.last_name;
+		wor.u_identity = oriwor.user_name;
+		var dep = new GlideRecord("cmn_department");
+		dep.get(oriwor.department);
+		wor.department = dep.sys_id;
+		wor_sysid = wor.insert();
+	}
+	// Location
+	var loc = new GlideRecord("x_tkcsc_archive_location");
+	var org_loc = new GlideRecord("cmn_location");
+	if (current.location){
+		org_loc.get(current.location);
+		loc.initialize();
+		loc.original_sysid = current.location.toString();
+		loc.u_name = org_loc.name;
+		var address_loc = org_loc.street;
+		if (cust_org.zip) address_loc += ", "+org_loc.zip;
+			if (cust_org.city) address_loc += ", "+org_loc.city;
+			loc.u_address = address_loc;
+		loc.u_longitude = org_loc.longitude;
+		loc.u_latitude = org_loc.latitude;
+		loc.u_gnr = org_loc.u_gnr;
+		loc.u_bnr = org_loc.u_bnr;
+		loc_sysid = loc.insert();
+	}
+	// Case Files
+	var cas = new GlideRecord("x_tkcsc_archive_cases");
+	cas.initialize();
+	cas.u_original_number = current.number;
+	cas.u_caseworker = wor_sysid;
+	cas.u_archive_location = loc_sysid;
+	cas.u_case_type = "Trehenvendelse";
+	cas.closed_at = current.closed_at;
+	cas.opened_at = current.opened_at;
+	cas.state = current.u_stage;
+	var loc_name = "";
+	if (org_loc.name) loc_name = org_loc.name;
+		var c_title = "Trehenvendelse: "+current.u_reason.getChoiceValue()+" - "+loc_name;
+	cas.title = c_title;
+	var cas_sysid = cas.insert();
+	
+	// Correspondence
+	var cor = new GlideRecord("x_tkcsc_archive_correspondence");
+	cor.initialize();
+	cor.u_title = c_title;
+	cor.description = current.description;
+	cor.u_direction = current.contact_type.getDisplayValue();
+	cor.u_send_date = current.opened_at;
+	cor.u_caseworker = wor_sysid;
+	cor.u_case = cas_sysid;
+	cor.u_contact_person = con_sysid;
+	cor.u_organisation = org_sysid;
+	var cor_sysid = cor.insert();
+	// Correspondence Attachments
+	var att = new GlideSysAttachment.copy(current.sys_class_name, current.sys_id, 'x_tkcsc_archive_correspondence', cor_sysid);
+	//copyAttachments(current.sys_class_name, current.sys_id, 'x_tkcsc_archive_correspondence', cor_sysid);
+	cor.u_ecc_ready = true;
+	cor.update();
+	
+	
+})(current, previous);]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>dag.kvarme@symfoni-esm.com</sys_created_by>
+        <sys_created_on>2017-05-22 12:27:29</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>43f9c10fdbba7a0072ccb34ffe96198f</sys_id>
+        <sys_mod_count>64</sys_mod_count>
+        <sys_name>Copy_to_Archive</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+        <sys_update_name>sys_script_43f9c10fdbba7a0072ccb34ffe96198f</sys_update_name>
+        <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+        <sys_updated_on>2017-06-26 12:45:50</sys_updated_on>
+        <template/>
+        <when>after</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=43f9c10fdbba7a0072ccb34ffe96198f"/>
+    <sys_translated_text action="INSERT_OR_UPDATE">
+        <documentkey>43f9c10fdbba7a0072ccb34ffe96198f</documentkey>
+        <fieldname>message</fieldname>
+        <language>nb</language>
+        <sys_created_by>dag.kvarme@symfoni-esm.com</sys_created_by>
+        <sys_created_on>2017-05-22 12:27:29</sys_created_on>
+        <sys_id>183099cfdbba7a0072ccb34ffe961905</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>dag.kvarme@symfoni-esm.com</sys_updated_by>
+        <sys_updated_on>2017-05-22 12:27:29</sys_updated_on>
+        <tablename>sys_script</tablename>
+        <value/>
+    </sys_translated_text>
+</record_update>

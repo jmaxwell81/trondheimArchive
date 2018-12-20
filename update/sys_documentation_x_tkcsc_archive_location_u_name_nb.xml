@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_documentation element="u_name" label="Name" language="nb" table="x_tkcsc_archive_location">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>u_name</element>
+            <help/>
+            <hint/>
+            <label>Name</label>
+            <language>nb</language>
+            <name>x_tkcsc_archive_location</name>
+            <plural>names</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>dag.kvarme@symfoni-esm.com</sys_created_by>
+            <sys_created_on>2017-05-04 08:54:12</sys_created_on>
+            <sys_customer_update>false</sys_customer_update>
+            <sys_id>14c27bc1dbe2f20072ccb34ffe9619d3</sys_id>
+            <sys_mod_count>1</sys_mod_count>
+            <sys_name>Name</sys_name>
+            <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+            <sys_policy/>
+            <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+            <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+            <sys_update_name>sys_documentation_x_tkcsc_archive_location_u_name_nb</sys_update_name>
+            <sys_updated_by>dag.kvarme@symfoni-esm.com</sys_updated_by>
+            <sys_updated_on>2017-05-04 08:57:21</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

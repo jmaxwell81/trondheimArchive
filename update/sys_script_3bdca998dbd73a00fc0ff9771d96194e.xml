@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>false</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>false</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>u_tree_removal_enquiry</collection>
+        <condition/>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition table="u_tree_removal_enquiry">locationISNOTEMPTY^EQ<item endquery="false" field="location" goto="false" newquery="false" operator="ISNOTEMPTY" or="false" value=""/>
+            <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </filter_condition>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Copy_to_Archive_Corr</name>
+        <order>600</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+	// Archive incomming corr
+	new x_tkcsc_archive.ArchiveUtils.createCorr(current.sys_id.toString(), "u_tree_removal_enquiry", "x_tkcsc_archive_correspondence", "I", current.description, "", false);
+	// Add ID of the case
+	
+		// Correspondence Attachments - copy all
+//		var att = new global.GlideSysAttachment();
+//	att.copy(current.sys_class_name, current.sys_id, 'x_tkcsc_archive_correspondence', cor_sysid);
+
+		//copySpecificAttachments(current, 'x_tkcsc_archive_correspondence', cor_sysid);
+})(current, previous);]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+        <sys_created_on>2017-06-07 22:00:55</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>3bdca998dbd73a00fc0ff9771d96194e</sys_id>
+        <sys_mod_count>42</sys_mod_count>
+        <sys_name>Copy_to_Archive_Corr</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+        <sys_update_name>sys_script_3bdca998dbd73a00fc0ff9771d96194e</sys_update_name>
+        <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+        <sys_updated_on>2017-06-26 06:23:55</sys_updated_on>
+        <template/>
+        <when>after</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=3bdca998dbd73a00fc0ff9771d96194e"/>
+    <sys_translated_text action="INSERT_OR_UPDATE">
+        <documentkey>3bdca998dbd73a00fc0ff9771d96194e</documentkey>
+        <fieldname>message</fieldname>
+        <language>nb</language>
+        <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+        <sys_created_on>2017-06-07 22:00:55</sys_created_on>
+        <sys_id>b3dca9d8dbd73a00fc0ff9771d9619a3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+        <sys_updated_on>2017-06-07 22:00:55</sys_updated_on>
+        <tablename>sys_script</tablename>
+        <value/>
+    </sys_translated_text>
+</record_update>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="Correspondences" max_length="40" name="x_tkcsc_archive_correspondences" type="collection">
+        <element label="Caseworker" max_length="32" name="u_caseworker" reference="x_tkcsc_archive_caseworkers" type="reference"/>
+        <element label="Cases" max_length="32" name="u_case_files" reference="x_tkcsc_archive_cases" type="reference"/>
+        <element label="Contact Person" max_length="32" name="u_contact_persons" reference="x_tkcsc_archive_contact_persons" type="reference"/>
+        <element label="Description" max_length="4000" name="u_description" type="string"/>
+        <element label="Direction" max_length="40" name="u_direction" type="string"/>
+        <element label="ECC ready" max_length="40" name="u_ecc_ready" type="boolean"/>
+        <element label="Organisation" max_length="32" name="u_organisation" reference="x_tkcsc_archive_organisation" type="reference"/>
+        <element label="Send date" max_length="40" name="u_send_date" type="glide_date_time"/>
+        <element label="Sensitive" max_length="40" name="u_sensitive" type="boolean"/>
+        <element label="Title" max_length="300" name="u_title" type="string"/>
+        <index name="index">
+            <element name="u_contact_persons"/>
+        </index>
+        <index name="index2">
+            <element name="u_case_files"/>
+        </index>
+        <index name="index3">
+            <element name="u_caseworker"/>
+        </index>
+        <index name="index4">
+            <element name="u_organisation"/>
+        </index>
+    </element>
+</database>

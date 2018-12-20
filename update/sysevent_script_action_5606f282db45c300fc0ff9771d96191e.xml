@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sysevent_script_action">
+    <sysevent_script_action action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <condition_script/>
+        <description/>
+        <event_name>x_tkcsc_archive.ecc.corr</event_name>
+        <name>ECC Corr</name>
+        <order>100</order>
+        <script><![CDATA[	correspondence = {};
+	
+	//Attachments
+	correspondence.attachments = [];
+	var attachment = new GlideRecord('sys_attachment');
+	attachment.addQuery('table_sys_id', current.sys_id);
+	attachment.addQuery('table_name', 'x_tkcsc_archive_correspondences');
+	attachment.query();
+	while (attachment.next())
+		{
+		correspondence.attachments.push(attachment.sys_id.toString());
+	}
+	
+	// Sys_id
+	correspondence.table_sys_id = current.sys_id.toString();
+	// Title
+	correspondence.title = current.u_title.toString();
+	// Beskrivelse
+	correspondence.beskrivelse = current.u_description.toString();
+	// Direction
+	correspondence.direction = current.u_direction.toString();
+	// Send date
+	correspondence.send_date = current.u_send_date.toString();
+	// Sensitive
+	correspondence.sensitive = current.u_sensitive.toString();
+	
+	// Case Files
+	var case_nr = "";
+	if (current.u_case_files){
+		var cas = new GlideRecord("x_tkcsc_archive_cases");
+		cas.get(current.u_case_files);
+		case_nr =  cas.u_original_number.toString();
+	}
+	correspondence.case_number =case_nr;
+	
+	// Contact Person
+	var con_first = "";
+	var con_last = "Anonym";
+	var con_email = "";
+	var con_phone = "";
+	var con_pnr = "";
+	var con_zip = "";
+	var con_st = "";
+	var con_city = "";
+	if (current.u_contact_persons){
+		var con = new GlideRecord("x_tkcsc_archive_contact_persons");
+		con.get(current.u_contact_persons);
+		con_first = con.u_first_name.toString();
+		con_last = con.u_last_name.toString();
+		con_email = con.u_email.toString();
+		con_phone = con.u_mobile_phone.toString();
+		con_pnr = con.u_personal_number.toString();
+		con_zip = con.u_zip.toString();
+		con_st = con.u_street.toString();
+		con_city = con.u_city.toString();
+	}
+	correspondence.contact_person = {};
+	correspondence.contact_person.first_name = con_first;
+	correspondence.contact_person.last_name = con_last;
+	correspondence.contact_person.email = con_email;
+	correspondence.contact_person.phone = con_phone;
+	correspondence.contact_person.personal_number = con_pnr;
+	correspondence.contact_person.zip = con_zip;
+	correspondence.contact_person.street = con_st;
+	correspondence.contact_person.city = con_city;
+	
+	// Organisation
+	var org_name = "";
+	var org_nr = "";
+	var org_add = "";
+	if (current.u_organisation){
+		var org = new GlideRecord("x_tkcsc_archive_organisation");
+		org.get( current.u_organisation);
+		org_name =  org.u_name.toString();
+gs.info("Org name: " + org_name);
+		org_nr = org.u_organisation_number.toString();
+		org_add = org.u_address.toString();
+	}
+	correspondence.organisation = {};
+	correspondence.organisation.name = org_name;
+	correspondence.organisation.organisation_number = org_nr;
+	correspondence.organisation.address = org_add;
+	//correspondence.organisation = current.u_organisation.toString();
+	
+	// Caseworker
+	var wor_first = "";
+	var wor_last = "";
+	var wor_use = "";
+	var depname = "";
+	if (current.u_caseworker){
+		var wor = new GlideRecord("x_tkcsc_archive_caseworkers");
+		wor.get(current.u_caseworker);
+		wor_first = wor.u_first_name.toString();
+		wor_last = wor.u_last_name.toString();
+		wor_use = wor.u_identity.toString();
+		var dep = new GlideRecord("cmn_department");
+		dep.get(wor.u_department);
+		if (dep.name)
+			depname = dep.name.toString();
+	}
+	correspondence.caseworker = {};
+	correspondence.caseworker.first_name = wor_first;
+	correspondence.caseworker.last_name = wor_last;
+	correspondence.caseworker.user_name = wor_use;
+	correspondence.caseworker.department = depname;
+	
+	
+	var json = new global.JSON();
+	var payload = json.encode(correspondence);
+	
+	var ecc = new GlideRecord('ecc_queue');
+	ecc.initialize();
+	
+	ecc.agent = "TIP-Archive";
+	ecc.topic = 'Archive';
+	ecc.name = 'correspondence.create';
+	ecc.queue = 'output';
+	ecc.state = 'ready';
+	ecc.source = gs.getProperty('instance_name');
+	ecc.payload = payload;
+	ecc.insert();]]></script>
+        <synchronous>false</synchronous>
+        <sys_class_name>sysevent_script_action</sys_class_name>
+        <sys_created_by>dag.kvarme@symfoni-esm.com</sys_created_by>
+        <sys_created_on>2017-09-08 13:40:31</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>5606f282db45c300fc0ff9771d96191e</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>ECC Corr</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+        <sys_update_name>sysevent_script_action_5606f282db45c300fc0ff9771d96191e</sys_update_name>
+        <sys_updated_by>kjetil.andenas@symfoni-esm.com</sys_updated_by>
+        <sys_updated_on>2018-11-23 08:46:35</sys_updated_on>
+    </sysevent_script_action>
+</record_update>

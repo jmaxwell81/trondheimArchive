@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="Contact persons" max_length="40" name="x_tkcsc_archive_contact_persons" type="collection">
+        <element label="City" max_length="100" name="u_city" type="string"/>
+        <element label="Email" max_length="100" name="u_email" type="string"/>
+        <element label="First_name" max_length="100" name="u_first_name" type="string"/>
+        <element label="Last_name" max_length="100" name="u_last_name" type="string"/>
+        <element label="Mobile_phone" max_length="100" name="u_mobile_phone" type="string"/>
+        <element label="Original sysid" max_length="100" name="u_original_sysid" type="string"/>
+        <element label="Personal_number" max_length="100" name="u_personal_number" type="string"/>
+        <element label="Street" max_length="100" name="u_street" type="string"/>
+        <element label="zip" max_length="100" name="u_zip" type="string"/>
+    </element>
+</database>

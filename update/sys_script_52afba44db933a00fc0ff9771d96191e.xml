@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>false</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>false</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>u_tree_removal_enquiry</collection>
+        <condition/>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition/>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Update_Archive_Case</name>
+        <order>100</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+	
+// 	// sjekker etter eksisterende sak
+// 	cas_sysid = x_tkcsc_archive.ArchiveUtils.getExisting(current.number.toString(), "u_original_number", "x_tkcsc_archive_case_files");
+		
+// 	if(cas_sysid == "") {
+// 		// dersom den ikke finnes opprettes den
+// 		cas_sysid = x_tkcsc_archive.ArchiveUtils.createCase(current.number.toString(), current.getTableName(), "x_tkcsc_archive_case_files");
+// 	} else {
+	// dersom den finnes oppdateres den
+	
+	// Call event enquiry.update_archive
+	gs.eventQueue("enquiry.update_archive", current, gs.getUserID(), "");
+	
+//	x_tkcsc_archive.ArchiveUtils.updateCase(current.number.toString(), current.getTableName(), cas_sysid, "x_tkcsc_archive_case_files");
+// 	}
+	
+
+})(current, previous);
+
+
+]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+        <sys_created_on>2017-06-07 09:24:08</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>52afba44db933a00fc0ff9771d96191e</sys_id>
+        <sys_mod_count>35</sys_mod_count>
+        <sys_name>Update_Archive_Case</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+        <sys_update_name>sys_script_52afba44db933a00fc0ff9771d96191e</sys_update_name>
+        <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+        <sys_updated_on>2017-06-26 07:11:55</sys_updated_on>
+        <template/>
+        <when>after</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=52afba44db933a00fc0ff9771d96191e"/>
+    <sys_translated_text action="INSERT_OR_UPDATE">
+        <documentkey>52afba44db933a00fc0ff9771d96191e</documentkey>
+        <fieldname>message</fieldname>
+        <language>nb</language>
+        <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+        <sys_created_on>2017-06-07 09:24:08</sys_created_on>
+        <sys_id>9eafba44db933a00fc0ff9771d96191f</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+        <sys_updated_on>2017-06-07 09:24:08</sys_updated_on>
+        <tablename>sys_script</tablename>
+        <value/>
+    </sys_translated_text>
+</record_update>

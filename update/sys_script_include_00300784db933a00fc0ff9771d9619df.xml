@@ -1,0 +1,732 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sys_script_include">
+    <sys_script_include action="INSERT_OR_UPDATE">
+        <access>public</access>
+        <active>true</active>
+        <api_name>x_tkcsc_archive.ArchiveUtils</api_name>
+        <client_callable>false</client_callable>
+        <description>Functions that create new records of various types in our archive model</description>
+        <name>ArchiveUtils</name>
+        <script><![CDATA[var ArchiveUtils = Class.create();
+ArchiveUtils.prototype = {
+	initialize: function() {
+	},
+	
+	type: 'ArchiveUtils'
+};
+
+ArchiveUtils.getExisting = function(orgValue, queryColumn, queryTable){
+	// example use: ArchiveUtils.getExisting(sys_id, "u_original_number", "x_tkcsc_archive_cases");
+	var recToCheck = new GlideRecord(queryTable);
+	
+	recToCheck.addQuery(queryColumn, orgValue);
+	recToCheck.query();
+	if (recToCheck.next()){
+		return recToCheck.sys_id;
+	} else {
+		return "";
+	}
+};
+
+// ArchiveUtils.getExistingRec = function(orgValue, queryColumn, queryTable){
+// 	// example use: ArchiveUtils.getExisting(sys_id, "u_original_number", "x_tkcsc_archive_cases");
+// 	var recToCheck = new GlideRecord(queryTable);
+	
+// 	recToCheck.addQuery(queryColumn, orgValue);
+// 	recToCheck.query();
+// 	if (recToCheck.next()){
+// 		gs.info("FOUND AND OPENED" + recToCheck.u_orginal_number);
+// 		return recToCheck;
+// 	} else {
+// 		return null;
+// 	}
+// };
+
+ArchiveUtils.createWorker = function(orgID, fromTable, createTable) {
+	// example use: ArchiveUtils.createWorker(current.assigned_to, "sys_user", "x_tkcsc_archive_caseworkers");
+	var recToCreate = new GlideRecord(createTable);
+	recToCreate.initialize();
+	recToCreate.u_original_sysid = current.assigned_to.toString();
+	var recFrom = new GlideRecord(fromTable);
+	recFrom.get(orgID);
+	recToCreate.u_first_name = recFrom.first_name;
+	recToCreate.u_last_name = recFrom.last_name;
+	recToCreate.u_identity = recFrom.user_name;
+	var tmpDep = new GlideRecord("cmn_department");
+	tmpDep.get(recFrom.department);
+	recToCreate.u_department = tmpDep.sys_id;
+	var newSysId = recToCreate.insert();
+	
+	return newSysId;
+};
+
+ArchiveUtils.findAndCreateWorker = function(usrID) {
+	// example use: ArchiveUtils.createWorker(current.assigned_to, "sys_user", "x_tkcsc_archive_caseworkers");
+	var wor_sysid = ArchiveUtils.getExisting(usrID, "u_identity", "x_tkcsc_archive_caseworkers");
+
+	if(wor_sysid == "") {
+		var original_sysid = ArchiveUtils.getExisting(usrID, "user_name", "sys_users");
+		var recToCreate = new GlideRecord(createTable);
+		recToCreate.initialize();
+		recToCreate.u_original_sysid = original_sysid;
+		var recFrom = new GlideRecord(fromTable);
+		recFrom.get(original_sysid);
+		recToCreate.u_first_name = recFrom.first_name;
+		recToCreate.u_last_name = recFrom.last_name;
+		recToCreate.u_identity = recFrom.user_name;
+		var tmpDep = new GlideRecord("cmn_department");
+		tmpDep.get(recFrom.department);
+		recToCreate.u_department = tmpDep.sys_id;
+		wor_sysid = recToCreate.insert();
+	}
+	return wor_sysid;
+};
+
+ArchiveUtils.createLocation = function(orgID, fromTable, createTable) {
+	// example use: ArchiveUtils.createLocation(current.location, "cmn_location", "x_tkcsc_archive_location");
+	var recToCreate = new GlideRecord(createTable);
+	recToCreate.initialize();
+	recToCreate.original_sysid = orgID;
+	var recFrom = new GlideRecord(fromTable);
+	recFrom.get(orgID);
+	recToCreate.u_name = recFrom.name;
+	recToCreate.u_address = recFrom.street;
+	recToCreate.u_longitude = recFrom.longitude;
+	recToCreate.u_latitude = recFrom.latitude;
+	//recToCreate.u_gnr = recFrom.u_gnr;
+	//recToCreate.u_bnr = recFrom.u_bnr;
+	recToCreate.u_gnr = recFrom.u_gardsnummer;
+	recToCreate.u_bnr = recFrom.u_bruksnummer;
+	var newSysId = recToCreate.insert();
+	
+	return newSysId;
+};
+
+
+ArchiveUtils.createContact = function(orgID, fromTable, createTable) {
+	// example use: ArchiveUtils.createContact(current.u_customer_contact, "u_customer_contact", "x_tkcsc_archive_contact_persons");
+	var recToCreate = new GlideRecord(createTable);
+	recToCreate.initialize();
+	recToCreate.u_original_sysid = orgID;
+	var recFrom = new GlideRecord(fromTable);
+	recFrom.get(orgID);
+	
+	recToCreate.u_first_name = recFrom.first_name;
+	recToCreate.u_last_name = recFrom.last_name;
+	recToCreate.u_email = recFrom.email;
+	recToCreate.u_mobile_phone = recFrom.mobile_phone.toString();
+	recToCreate.u_personal_number = recFrom.u_personal_number;
+	recToCreate.u_zip = recFrom.zip;
+	recToCreate.u_street = recFrom.street;
+	recToCreate.u_city = recFrom.city;
+	
+	var newSysId = recToCreate.insert();
+	
+	return newSysId;
+};
+
+
+ArchiveUtils.createOrganization = function(orgID, fromTable, createTable) {
+	// example use: ArchiveUtils.createOrganization(current.u_customer_organization, "core_company", "x_tkcsc_archive_organisation");
+	var recToCreate = new GlideRecord(createTable);
+	recToCreate.initialize();
+	recToCreate.u_original_sysid = orgID;
+	var recFrom = new GlideRecord(fromTable);
+	recFrom.get(orgID);
+	
+	recToCreate.u_name = recFrom.name;
+	recToCreate.u_organisation_number =recFrom.u_orgnumber;
+	var address = "";
+	if (recFrom.zip) address += ", "+recFrom.zip;
+		if (recFrom.city) address += ", "+recFrom.city;
+		recToCreate.u_address =address;
+	
+	var newSysId = recToCreate.insert();
+	
+	return newSysId;
+};
+
+ArchiveUtils.createCase = function(orgNumber, fromTable, createTable) {
+	// example use: ArchiveUtils.createCase(current.sys_id.toString(), "u_tree_removal_enquiry", "x_tkcsc_archive_cases");
+	//sys_id holders
+	var wor_sysid = "";
+	var cont_sysid = "";
+	var org_sysid = "";
+	var loc_sysid = "";	
+	
+	var recToCreate = new GlideRecord(createTable);
+	recToCreate.initialize();
+	var recFrom = new GlideRecord(fromTable);
+	
+	recFrom.addQuery("number", orgNumber);
+	recFrom.query();
+	if (recFrom.next()) {
+	
+		// Extract possible Assignee and create caseworker if needed
+		if (recFrom.assigned_to){
+			wor_sysid = ArchiveUtils.getExisting(recFrom.assigned_to, "u_original_sysid", "x_tkcsc_archive_caseworkers");
+
+			if(wor_sysid == "") {
+				wor_sysid = ArchiveUtils.createWorker(recFrom.assigned_to, "sys_user", "x_tkcsc_archive_caseworkers");
+			}
+		}
+
+		// Extract possible Contact and create Contact person if needed
+		if (recFrom.u_customer_contact){
+			cont_sysid = ArchiveUtils.getExisting(recFrom.u_customer_contact, "u_original_sysid", "x_tkcsc_archive_contact_persons");
+			
+			if(cont_sysid == "") {
+				cont_sysid =ArchiveUtils.createContact(recFrom.u_customer_contact, "u_customer_contact", "x_tkcsc_archive_contact_persons");
+
+			}
+		}
+		// Extract possible Orgnaization and create organization if needed
+		if (recFrom.u_customer_organization){
+			org_sysid = ArchiveUtils.getExisting(recFrom.u_customer_organization, "u_original_sysid", "x_tkcsc_archive_organisation");
+
+			if(org_sysid == "") {
+				org_sysid = ArchiveUtils.createOrganization(recFrom.u_customer_organization, "core_company", "x_tkcsc_archive_organisation");
+
+			}
+		}
+
+		// Extract possible Location and create location if needed
+		if (recFrom.location){
+			loc_name = recFrom.location.getDisplayValue("name");
+			loc_sysid = ArchiveUtils.getExisting(recFrom.location, "original_sysid", "x_tkcsc_archive_location");
+			if(loc_sysid == "") {
+				loc_sysid = ArchiveUtils.createLocation(recFrom.location, "cmn_location", "x_tkcsc_archive_location");			
+			}
+		}
+
+		recToCreate.u_caseworker = wor_sysid;
+		recToCreate.u_sakspart = cont_sysid;
+		recToCreate.u_sakspart_org = org_sysid;
+
+		var refEnq = new GlideRecord('u_enquiry');
+		var cas_array = [];
+		refEnq.addQuery('parent', recFrom.sys_id);
+		refEnq.query();
+		while(refEnq.next()){
+			cas_array.push(refEnq.getDisplayValue());
+		}
+		recToCreate.u_cross_reference = cas_array.join(',');
+		recToCreate.u_original_number = recFrom.number;
+		recToCreate.u_original_sysid = recFrom.sys_id;
+		recToCreate.u_archive_location = loc_sysid;
+		recToCreate.u_case_type = recFrom.u_type.getDisplayValue();  // "Trehenvendelse";
+		recToCreate.u_closed_at = recFrom.closed_at;
+		recToCreate.u_opened_at = recFrom.opened_at;
+		recToCreate.u_state = recFrom.state;
+
+		if (current.sys_class_name == "u_event_outskirts_enquiry") {
+			recToCreate.u_title = recFrom.u_type.getDisplayValue() + ": " + recFrom.u_type_of_event.getChoiceValue();
+		} else {
+			recToCreate.u_title = recFrom.u_type.getDisplayValue() + ": " + recFrom.u_reason.getChoiceValue();
+		}
+		
+
+		if(recFrom.location)
+			recToCreate.u_title = recToCreate.u_title + " - " + recFrom.location.getDisplayValue();
+
+		var newSysId = recToCreate.insert();
+		recFrom.u_archive_archive_case = true;
+		recFrom.update();
+		return newSysId;
+	} else {
+		return "";
+	}
+};
+
+ArchiveUtils.updateCase = function(orgNumber, fromTable, cas_sysid, toTable) {
+	// example use: ArchiveUtils.updateCase(current.number, "u_tree_removal_enquiry", "x_tkcsc_archive_cases");
+
+	//sys_id holders
+	var wor_sysid = "";
+	var cont_sysid = "";
+	var org_sysid = "";
+	var loc_sysid = "";	
+	
+	var recTo = new GlideRecord(toTable);
+	recTo.get(cas_sysid);   // Henter opp eksisterende sak
+	
+	if(!recTo.u_case_done) {  // Fortsetter bare arkivering dersom saken ikke har vært lukket
+		
+		var recFrom = new GlideRecord(fromTable);
+		recFrom.addQuery("number", orgNumber);
+		recFrom.query();
+		if (recFrom.next()) {
+
+			// Extract possible Assignee and create caseworker if needed
+			if (recFrom.assigned_to){
+				wor_sysid = ArchiveUtils.getExisting(recFrom.assigned_to, "u_original_sysid", "x_tkcsc_archive_caseworkers");
+
+				if(wor_sysid == "") {
+					wor_sysid = ArchiveUtils.createWorker(recFrom.assigned_to, "sys_user", "x_tkcsc_archive_caseworkers");
+				}
+			}
+
+			// Extract possible Contact and create Contact person if needed
+			if (recFrom.u_customer_contact){
+				cont_sysid = ArchiveUtils.getExisting(recFrom.u_customer_contact, "u_original_sysid", "x_tkcsc_archive_contact_persons");
+
+				if(cont_sysid == "") {
+					cont_sysid =ArchiveUtils.createContact(recFrom.u_customer_contact, "u_customer_contact", "x_tkcsc_archive_contact_persons");
+
+				}
+			}
+			// Extract possible Orgnaization and create organization if needed
+			if (recFrom.u_customer_organization){
+				org_sysid = ArchiveUtils.getExisting(recFrom.u_customer_organization, "u_original_sysid", "x_tkcsc_archive_organisation");
+
+				if(org_sysid == "") {
+					org_sysid = ArchiveUtils.createOrganization(recFrom.u_customer_organization, "core_company", "x_tkcsc_archive_organisation");
+
+				}
+			}
+
+			// Extract possible Location and create location if needed
+			if (recFrom.location){
+				loc_name = recFrom.location.getDisplayValue("name");
+				loc_sysid = ArchiveUtils.getExisting(recFrom.location, "original_sysid", "x_tkcsc_archive_location");
+				if(loc_sysid == "") {
+					loc_sysid = ArchiveUtils.createLocation(recFrom.location, "cmn_location", "x_tkcsc_archive_location");			
+				}
+			}
+
+			recTo.u_caseworker = wor_sysid;
+			recTo.u_sakspart = cont_sysid;
+			recTo.u_sakspart_org = org_sysid;
+
+			var refEnq = new GlideRecord('u_enquiry');
+			var cas_array = [];
+			refEnq.addQuery('parent', recFrom.sys_id);
+			refEnq.query();
+			while(refEnq.next()){
+				cas_array.push(refEnq.getDisplayValue());
+			}
+			if(current.parent) {
+				cas_array.push(current.parent.getDisplayValue());
+				gs.info("Legger parent i køen");
+
+	// Option 1 - using Event
+// 				var parentCase = new GlideRecord("u_enquiry");
+// 				parentCase.get(current.parent);
+// 				gs.info("parent Number: " + parentCase.getValue("number").toString());
+// 				parentCase.setValue("shortDescription", "relatert til " + current.getValue("number").toString());
+// 				parentCase.update();
+// 				//gs.eventQueue("enquiry.update_archive", parentCase, gs.getUserID(), "");
+	// Option 2 - recursive call
+		//		var pcas_sysid = current.parent;
+		//		ArchiveUtils.updateCase(current.parent.getDisplayValue(), "u_enquiry", pcas_sysid, toTable);   //update parent case
+				
+			}
+			recTo.u_cross_reference = cas_array.join(',');
+			recTo.u_original_number = recFrom.number;
+			recTo.u_archive_location = loc_sysid;
+			recTo.u_case_type = recFrom.u_type.getDisplayValue();
+			recTo.u_closed_at = recFrom.closed_at;
+			recTo.u_opened_at = recFrom.opened_at;
+			recTo.u_state = recFrom.state;
+			
+		if((current.sys_class_name == "u_tree_removal_enquiry")) {
+			recTo.u_title = recFrom.u_type.getDisplayValue() + ": " + recFrom.u_reason.getChoiceValue();
+		} else if (current.sys_class_name == "u_event_outskirts_enquiry") {
+			recTo.u_title = recFrom.u_type.getDisplayValue() + ": " + recFrom.u_type_of_event.getChoiceValue();
+		} else if (current.sys_class_name == "u_compensation_enquiry") {
+			recTo.u_title = recFrom.u_type.getDisplayValue() + ": " + recFrom.u_reason.getChoiceValue();
+		}	
+			
+			if(recFrom.location)
+				recTo.u_title = recTo.u_title + " - " + recFrom.location.getDisplayValue();
+
+			recTo.update();
+			return cas_sysid;
+		} else
+			return "";
+	}
+};
+
+ArchiveUtils.createNoteFromJournal = function(orgID, fromTable, createTable, sensitive, xcas_sysid, cas_num) {
+	// example use: ArchiveUtils.createNoteFromJournal(current.sys_id.toString(), "u_tree_removal_enquiry", "x_tkcsc_archive_notes");
+	var recToCreate = new GlideRecord(createTable);
+	recToCreate.initialize();
+	recToCreate.u_original_sysid = orgID;
+	var recFrom = new GlideRecord(fromTable);
+	recFrom.get(orgID);
+
+	var cas_sysid = ArchiveUtils.getExisting(cas_num, "u_original_number", "x_tkcsc_archive_cases");
+	
+	var recCase = new GlideRecord("x_tkcsc_archive_cases");
+	recCase.get(cas_sysid);   // Henter opp eksisterende sak
+
+	var wor_sysid = "";
+	if (recCase.u_caseworker) {
+		//Check if a record already exist in archive with same sysid
+		wor_sysid = recCase.u_caseworker;
+	//	wor_sysid = ArchiveUtils.getExisting(recCase.u_caseworker, "u_original_sysid", "x_tkcsc_archive_caseworkers");
+	//	if(wor_sysid == "") {
+	//			wor_sysid = ArchiveUtils.createWorker(recCase.assigned_to, "sys_user", "x_tkcsc_archive_caseworkers");
+	//	}
+	}
+		recToCreate.u_description = recFrom.value;
+	//	entry.split(" - ");
+		recToCreate.u_opened_at = recFrom.sys_created_on;
+		recToCreate.u_case_files = cas_sysid;
+		recToCreate.u_caseworker = wor_sysid;
+		recToCreate.u_sensitive = sensitive;
+	if(recCase.u_case_type) {
+		recToCreate.u_title = "Arbeidsnotat - " + recCase.u_case_type.getDisplayValue() + " - " + recFrom.sys_created_on.getDisplayValue();
+	} else {
+		recToCreate.u_title = "Arbeidsnotat - " + recFrom.sys_created_on.getDisplayValue();
+	}
+
+		var newSysId = recToCreate.insert();
+		
+		//COPY SPECIFIC ATTACHMENTS
+//		ArchiveUtils.copySpecificAttachments(recFrom.u_attachments_to_send, 'x_tkcsc_archive_notes', newSysId);
+		recToCreate.u_ecc_ready = true;
+		recToCreate.update();
+
+		return newSysId;
+	
+};
+
+ArchiveUtils.createNote = function(orgID, fromTable, createTable, sensitive) {
+	// example use: ArchiveUtils.createNote(current.sys_id.toString(), "u_tree_removal_enquiry", "x_tkcsc_archive_notes");
+	var recToCreate = new GlideRecord(createTable);
+	recToCreate.initialize();
+	recToCreate.u_original_sysid = orgID;
+	var recFrom = new GlideRecord(fromTable);
+	recFrom.get(orgID);
+	
+	//sys_id holders
+	var wor_sysid = "";
+	var cas_sysid = "";
+	
+	cas_sysid = ArchiveUtils.getExisting(recFrom.number, "u_original_number", "x_tkcsc_archive_cases");
+
+	var recCase = new GlideRecord("x_tkcsc_archive_cases");
+	recCase.get(cas_sysid);   // Henter opp eksisterende sak
+	
+	if(!recCase.u_case_done) {  // Fortsetter bare arkivering dersom saken ikke har vært lukket
+
+		if (recFrom.assigned_to){
+			//Check if a record already exist in archive with same sysid
+			wor_sysid = ArchiveUtils.getExisting(recFrom.assigned_to, "u_original_sysid", "x_tkcsc_archive_caseworkers");
+
+			if(wor_sysid == "") {
+				wor_sysid = ArchiveUtils.createWorker(recFrom.assigned_to, "sys_user", "x_tkcsc_archive_caseworkers");
+			}
+		}
+
+		var entry = recFrom.work_notes.getJournalEntry(1);
+		recToCreate.u_description = entry;
+		entry.split(" - ");
+		recToCreate.u_opened_at = entry[0];
+		recToCreate.u_case_files = cas_sysid;
+		recToCreate.u_caseworker = wor_sysid;
+		recToCreate.u_sensitive = sensitive;
+		recToCreate.u_title = "Arbeidsnotat - " + recFrom.u_type.getDisplayValue() + " - " + recFrom.sys_created_on.getDisplayValue();
+
+		var newSysId = recToCreate.insert();
+
+		//COPY SPECIFIC ATTACHMENTS
+		ArchiveUtils.copySpecificAttachments(recFrom.u_attachments_to_send, 'x_tkcsc_archive_notes', newSysId);
+		recToCreate.u_ecc_ready = true;
+		recToCreate.update();
+
+		return newSysId;
+	} else
+		return "";
+};
+
+
+ArchiveUtils.createSubtask = function(orgID, fromTable, createTable, sensitive, currentTable, currID) {
+	// example use: ArchiveUtils.createSubtask(current.parent.toString(), "u_tree_removal_enquiry", "x_tkcsc_archive_notes", false, "u_enquiry_subtask", current.sys_id_toString());
+	var recToCreate = new GlideRecord(createTable);
+	recToCreate.initialize();
+	recToCreate.u_original_sysid = currID;
+	var recFrom = new GlideRecord(fromTable);
+	recFrom.get(orgID);
+
+	var currFrom = new GlideRecord(currentTable);
+	currFrom.get(currID);
+	
+	//sys_id holders
+	var wor_sysid = "";
+	var cas_sysid = "";
+	
+	cas_sysid = ArchiveUtils.getExisting(recFrom.number, "u_original_number", "x_tkcsc_archive_cases");
+	
+	var recCase = new GlideRecord("x_tkcsc_archive_cases");
+	recCase.get(cas_sysid);   // Henter opp eksisterende sak
+	if(!recCase.u_case_done) {  // Fortsetter bare arkivering dersom saken ikke har vært lukket
+	
+		if (recFrom.assigned_to){
+			//Check if a record already exist in archive with same sysid
+			wor_sysid = ArchiveUtils.getExisting(recFrom.assigned_to, "u_original_sysid", "x_tkcsc_archive_caseworkers");
+
+			if(wor_sysid == "") {
+				wor_sysid = ArchiveUtils.createWorker(recFrom.assigned_to, "sys_user", "x_tkcsc_archive_caseworkers");
+			}
+		}
+
+		recToCreate.u_title = "Arbeidsoppgave - " + recCase.u_title;
+		recToCreate.u_description = currFrom.description.toString();
+		recToCreate.u_opened_at = currFrom.sys_updated_on;
+		recToCreate.u_case_files = cas_sysid;
+		recToCreate.u_caseworker = wor_sysid;
+		recToCreate.u_sensitive = sensitive;
+
+		var newSysId = recToCreate.insert();
+
+		//COPY ALL ATTACHMENTS FROM TASK
+			new GlideSysAttachment.copy(currentTable, currID, createTable, newSysId);
+	//	ArchiveUtils.copySpecificAttachments(recFrom.u_attachments_to_send, 'x_tkcsc_archive_notes', newSysId);
+		recToCreate.u_ecc_ready = true;
+		recToCreate.update();
+
+		return newSysId;
+	} else
+		return "";
+};
+
+
+ArchiveUtils.createSubtaskLog = function(orgID, fromTable, createTable, sensitive, currentTable, currID) {
+	// example use: ArchiveUtils.createSubtaskLog(current.parent.toString(), "u_tree_removal_enquiry", "x_tkcsc_archive_notes", false, "u_enquiry_subtask", current.sys_id_toString());
+	var recToCreate = new GlideRecord(createTable);
+	recToCreate.initialize();
+	recToCreate.u_original_sysid = currID;
+	var recFrom = new GlideRecord(fromTable);
+	recFrom.get(orgID);
+	var currFrom = new GlideRecord(currentTable);
+	currFrom.get(currID);
+	
+	//sys_id holders
+	var wor_sysid = "";
+	var cas_sysid = "";
+	
+	cas_sysid = ArchiveUtils.getExisting(recFrom.number, "u_original_number", "x_tkcsc_archive_cases");
+
+	var recCase = new GlideRecord("x_tkcsc_archive_cases");
+	recCase.get(cas_sysid);   // Henter opp eksisterende sak
+	
+	if(!recCase.u_case_done) {  // Fortsetter bare arkivering dersom saken ikke har vært lukket
+	
+		if (recFrom.assigned_to){
+			//Check if a record already exist in archive with same sysid
+			wor_sysid = ArchiveUtils.getExisting(recFrom.assigned_to, "u_original_sysid", "x_tkcsc_archive_caseworkers");
+
+			if(wor_sysid == "") {
+				wor_sysid = ArchiveUtils.createWorker(recFrom.assigned_to, "sys_user", "x_tkcsc_archive_caseworkers");
+			}
+		}
+
+		recToCreate.u_title = "Arbeidsoppgave logg - " + recCase.u_title;
+		recToCreate.u_description = currFrom.work_notes.getJournalEntry(1).toString();
+//		recToCreate.u_description = currFrom.description.toString();
+		recToCreate.u_opened_at = currFrom.sys_updated_on;
+		recToCreate.u_case_files = cas_sysid;
+		recToCreate.u_caseworker = wor_sysid;
+		recToCreate.u_sensitive = sensitive;
+
+		var newSysId = recToCreate.insert();
+
+		//COPY ALL ATTACHMENTS FROM TASK
+			new GlideSysAttachment.copy(currentTable, currID, createTable, newSysId);
+	//	ArchiveUtils.copySpecificAttachments(recFrom.u_attachments_to_send, 'x_tkcsc_archive_notes', newSysId);
+		recToCreate.u_ecc_ready = true;
+		recToCreate.update();
+
+		return newSysId;
+	} else
+		return "";
+};
+
+
+//new x_tkcsc_archive.ArchiveUtils.createCorr(current.sys_id.toString(), current.getTableName(), "x_tkcsc_archive_correspondences", "I", current.description, "", false);
+
+ArchiveUtils.createCorr = function(orgID, fromTable, createTable, direction, msg, emailID, sensitive) {
+	// example use: ArchiveUtils.createCorr(current.sysid.toString(), "u_tree_removal_enquiry", "x_tkcsc_archive_correspondences");
+
+	var recToCreate = new GlideRecord(createTable);
+	recToCreate.initialize();
+
+	var recFrom = new GlideRecord(fromTable);
+	recFrom.get(orgID);
+
+	var desc = recFrom.description;
+	if (msg !="") desc = msg;
+
+	recToCreate.u_description = desc;
+	recToCreate.u_direction = direction;
+	recToCreate.u_send_date = recFrom.sys_updated_on;
+	recToCreate.u_sensitive = sensitive;
+	
+	//sys_id holders
+	var wor_sysid = "";
+	var cont_sysid = "";
+	var org_sysid = "";
+	var cas_sysid = "";
+
+	cas_sysid = ArchiveUtils.getExisting(recFrom.number, "u_original_number", "x_tkcsc_archive_cases");
+
+	var recCase = new GlideRecord("x_tkcsc_archive_cases");
+	recCase.get(cas_sysid);   // Henter opp eksisterende sak
+
+	if(recFrom.u_archive_archive_case && !recCase.u_case_done) {  // Fortsetter bare arkivering dersom saken ikke har vært lukket
+		var recEmail = new GlideRecord("sys_email");
+		recEmail.get(emailID);
+		if(!recEmail.subject.toString().includes("godkjenning")) {   // Tar ikke med arkivering av interne beskjeder om godkjenning
+			if(recEmail && recEmail.subject)
+				recToCreate.u_title = recEmail.subject.toString();
+			else {
+				if(direction.equals("I")) recToCreate.u_title = recCase.u_title;
+				else recToCreate.u_title = "Svar på " + recCase.u_title;
+			}
+
+			if (recFrom.assigned_to){
+				wor_sysid = ArchiveUtils.getExisting(recFrom.assigned_to, "u_original_sysid", "x_tkcsc_archive_caseworkers");
+
+				if(wor_sysid == "") {
+					wor_sysid = ArchiveUtils.createWorker(recFrom.assigned_to, "sys_user", "x_tkcsc_archive_caseworkers");
+				}
+			}
+
+			if (recFrom.u_customer_contact){
+				cont_sysid = ArchiveUtils.getExisting(recFrom.u_customer_contact, "u_original_sysid", "x_tkcsc_archive_contact_persons");
+				gs.info("cont_sysid "+cont_sysid);
+				if(cont_sysid == "") {
+					cont_sysid = ArchiveUtils.createContact(recFrom.u_customer_contact, "u_customer_contact", "x_tkcsc_archive_contact_persons");
+				}
+			}
+
+			if (recFrom.u_customer_organization){
+				org_sysid = ArchiveUtils.getExisting(recFrom.u_customer_organization, "u_original_sysid", "x_tkcsc_archive_organisation");
+
+				if(org_sysid == "") {
+					org_sysid = ArchiveUtils.createOrganization(recFrom.u_customer_organization, "core_company", "x_tkcsc_archive_organisation");
+
+				}
+			}
+
+			recToCreate.u_caseworker = wor_sysid;
+			recToCreate.u_case_files = cas_sysid;
+			recToCreate.u_contact_persons = cont_sysid;
+			recToCreate.u_organisation = org_sysid;
+			var newSysId = recToCreate.insert();
+
+			if(emailID == "SMS") {
+				gs.info("SMS har ikke vedlegg");
+			}else if (emailID == "svarut"){
+				ArchiveUtils.copySpecificAttachments("SvarUt.pdf", createTable, newSysId);
+			} else if(emailID == "") {
+				// Correspondence Attachments - copy all
+				new GlideSysAttachment.copy(fromTable, orgID, createTable, newSysId);
+				//copyAllAttachments(fromTable, orgID, createTable, newSysId);	
+			} else {
+				//copyAllAttachments("sys_email", emailID, createTable, newSysId);
+				new GlideSysAttachment.copy("sys_email", emailID, createTable, newSysId);
+			}
+
+			recToCreate.u_ecc_ready = true;
+			recToCreate.update();
+			return newSysId;
+		}
+	} else
+		return "";
+};
+
+
+//Copy specific attachments from attachment selector list
+ArchiveUtils.copySpecificAttachments = function(check_list, to_table, to_sysid){
+	// example use: ArchiveUtils.copySpecificAttachments(current.u_attachments_to_send, 'x_tkcsc_archive_note', cor_sysid);;
+	if(check_list){
+		var at_list = check_list;
+		var at_array =	at_list.split(',');
+	
+		//Only get attachments related to the record
+		var att_r = new GlideRecord('sys_attachment');
+		for(var i=0; i < at_array.length; i++){
+			att_r.get(at_array[i]);
+			copyAttachments(current.sys_class_name, current.sys_id, to_table, to_sysid, att_r.file_name);
+		}
+	}
+};
+
+//Help function for ArchiveUtils.copySpecificAttachments to copy a specific attachment
+function copyAttachments(sourceTable, sourceID, targetTable, targetID, filename) {
+	var att = new GlideRecord("sys_attachment");
+	var userImagePrefix = "ZZ_YY";
+	var tables = [sourceTable, userImagePrefix + sourceTable];
+	att.addQuery("table_name", tables);
+	att.addQuery("table_sys_id", sourceID);
+	att.addQuery('file_name', filename);
+	att.query();
+	
+	while (att.next()) {
+		//copy attachment record
+		var oldSysID = att.getUniqueValue();
+		var targetName = targetTable;
+		var sourceName = att.getValue("table_name");
+		if (sourceName.startsWith(userImagePrefix))
+			targetName = userImagePrefix + targetTable;
+		
+		att.setValue("table_name", targetName);
+		att.setValue("table_sys_id", targetID);
+		var newSysID = att.insert();
+		
+		//copy attachment doc records
+		var doc = new GlideRecord("sys_attachment_doc");
+		doc.addQuery("sys_attachment", oldSysID);
+		doc.query();
+		while (doc.next()) {
+			doc.setValue("sys_attachment", newSysID);
+			doc.insert();
+		}
+	}
+}
+
+//Help function for ArchiveUtils.copySpecificAttachments to copy a specific attachment Copies all attachments from one record to another
+function copyAllAttachments(sourceTable, sourceID, targetTable, targetID) {
+	var att = new GlideRecord("sys_attachment");
+	att.addQuery("table_name", sourceTable);
+	att.addQuery("table_sys_id", sourceID);
+	att.query();
+	
+	while (att.next()) {
+		//copy attachment record
+		var oldSysID = att.getUniqueValue();
+		var targetName = targetTable;
+		var sourceName = att.getValue("table_name");
+		
+		att.setValue("table_name", targetName);
+		att.setValue("table_sys_id", targetID);
+		var newSysID = att.insert();
+		
+		//copy attachment doc records
+		var doc = new GlideRecord("sys_attachment_doc");
+		doc.addQuery("sys_attachment", oldSysID);
+		doc.query();
+		while (doc.next()) {
+			doc.setValue("sys_attachment", newSysID);
+			doc.insert();
+		}
+	}
+}]]></script>
+        <sys_class_name>sys_script_include</sys_class_name>
+        <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+        <sys_created_on>2017-06-07 09:26:57</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_id>00300784db933a00fc0ff9771d9619df</sys_id>
+        <sys_mod_count>191</sys_mod_count>
+        <sys_name>ArchiveUtils</sys_name>
+        <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+        <sys_update_name>sys_script_include_00300784db933a00fc0ff9771d9619df</sys_update_name>
+        <sys_updated_by>kjetil.andenas@symfoni-esm.com</sys_updated_by>
+        <sys_updated_on>2018-12-04 12:36:49</sys_updated_on>
+    </sys_script_include>
+</record_update>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>true</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>false</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>u_tree_removal_enquiry</collection>
+        <condition/>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition table="u_tree_removal_enquiry">work_notesVALCHANGES^EQ<item endquery="false" field="work_notes" goto="false" newquery="false" operator="VALCHANGES" or="false" value=""/>
+            <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </filter_condition>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Copy_to_Archive_Note</name>
+        <order>300</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+	
+	var wor_sysid = "";
+	var cas_sysid = "";
+	
+	gs.info("Note BR");
+	gs.info("Kladd: " + current.kladd);	
+	
+	if(current.kladd != true) {
+		cas_sysid = ArchiveUtils.getExisting(current.number, "u_original_number", "x_tkcsc_archive_cases");
+	
+	
+		if (current.assigned_to){
+			//Check if a record already exist in archive with same sysid
+			gs.info("Søker " + current.assigned_to);
+			wor_sysid = ArchiveUtils.getExisting(current.assigned_to, "u_original_sysid", "x_tkcsc_archive_caseworkers");
+
+			if(wor_sysid == "") {
+				wor_sysid = ArchiveUtils.createWorker(current.assigned_to, "sys_user", "x_tkcsc_archive_caseworkers");
+			}
+		}
+
+		// Note	
+		var note = new GlideRecord("x_tkcsc_archive_notes");
+		note.initialize();
+		var entry = current.work_notes.getJournalEntry(1);
+		note.description = entry;
+		entry.split(" - ");
+		note.opened_at = entry[0];
+		note.u_case_files = cas_sysid;
+		note.u_caseworker = wor_sysid;
+		var note_sysid = note.insert();
+
+		//COPY SPECIFIC ATTACHMENTS
+		ArchiveUtils.copySpecificAttachments(current.u_attachments_to_send, 'x_tkcsc_archive_note', note_sysid);
+
+		note.u_ecc_ready = true;
+		note.update();
+	
+	}
+
+})(current, previous);]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+        <sys_created_on>2017-06-07 12:53:47</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>91afa700db173a00fc0ff9771d961959</sys_id>
+        <sys_mod_count>17</sys_mod_count>
+        <sys_name>Copy_to_Archive_Note</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+        <sys_update_name>sys_script_91afa700db173a00fc0ff9771d961959</sys_update_name>
+        <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+        <sys_updated_on>2017-06-28 08:55:41</sys_updated_on>
+        <template/>
+        <when>after</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=91afa700db173a00fc0ff9771d961959"/>
+    <sys_translated_text action="INSERT_OR_UPDATE">
+        <documentkey>91afa700db173a00fc0ff9771d961959</documentkey>
+        <fieldname>message</fieldname>
+        <language>nb</language>
+        <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+        <sys_created_on>2017-06-07 12:53:47</sys_created_on>
+        <sys_id>1dafa700db173a00fc0ff9771d96195a</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+        <sys_updated_on>2017-06-07 12:53:47</sys_updated_on>
+        <tablename>sys_script</tablename>
+        <value/>
+    </sys_translated_text>
+</record_update>

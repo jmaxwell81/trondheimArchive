@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element label="Cases" max_length="40" name="x_tkcsc_archive_cases" type="collection">
+        <element label="Archive location" max_length="32" name="u_archive_location" reference="x_tkcsc_archive_location" type="reference"/>
+        <element label="Caseworker" max_length="32" name="u_caseworker" reference="x_tkcsc_archive_caseworkers" type="reference"/>
+        <element label="Case done" max_length="40" name="u_case_done" type="boolean"/>
+        <element label="Case type" max_length="100" name="u_case_type" type="string"/>
+        <element label="Closed at" max_length="40" name="u_closed_at" type="glide_date_time"/>
+        <element label="Cross reference" max_length="4000" name="u_cross_reference" reference="u_enquiry" type="glide_list"/>
+        <element label="Opened at" max_length="40" name="u_opened_at" type="glide_date_time"/>
+        <element label="Original number" max_length="100" name="u_original_number" type="string"/>
+        <element label="Sakspart" max_length="32" name="u_sakspart" reference="x_tkcsc_archive_contact_persons" type="reference"/>
+        <element label="Sakspart org" max_length="32" name="u_sakspart_org" reference="x_tkcsc_archive_organisation" type="reference"/>
+        <element label="State" max_length="100" name="u_state" type="string"/>
+        <element label="Title" max_length="100" name="u_title" type="string"/>
+        <index name="index">
+            <element name="u_sakspart_org"/>
+        </index>
+        <index name="index2">
+            <element name="u_archive_location"/>
+        </index>
+        <index name="index3">
+            <element name="u_caseworker"/>
+        </index>
+        <index name="index4">
+            <element name="u_sakspart"/>
+        </index>
+    </element>
+</database>

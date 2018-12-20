@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element extends="sys_import_set_row" label="TK_AD/Groups" max_length="40" name="ldap_group_import" type="collection">
+        <element attributes="edge_encryption_enabled=true" label="memberOf" max_length="40" name="u_memberof" type="string"/>
+    </element>
+</database>

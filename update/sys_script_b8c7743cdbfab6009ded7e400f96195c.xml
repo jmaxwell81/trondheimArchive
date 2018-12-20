@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>false</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>false</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>x_tkcsc_archive_correspondence</collection>
+        <condition/>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition/>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>ECC_Update_Correspondence</name>
+        <order>100</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+	
+	correspondence = {};
+	
+	//Attachments
+	correspondence.attachments = [];
+	var attachment = new GlideRecord('sys_attachment');
+	attachment.addQuery('table_sys_id', current.sys_id);
+	attachment.addQuery('table_name', 'x_tkcsc_archive_correspondence');
+	attachment.query();
+	while (attachment.next())
+	{
+		correspondence.attachments.push(attachment.sys_id.toString());
+	}
+
+
+	// Sys_id
+	correspondence.table_sys_id = current.sys_id.toString();
+	// Title
+	correspondence.title = current.u_title.toString();
+	// Beskrivelse
+	correspondence.beskrivelse = current.description.toString();
+	// Direction
+	correspondence.direction = current.u_direction.toString();
+	// Send date
+	correspondence.send_date = current.u_send_date.toString();
+	// Case Files
+	var cas = new GlideRecord("x_tkcsc_archive_case_files");
+	cas.get(current.u_case);
+	correspondence.case_number = cas.u_original_number.toString();
+	// Contact Person
+	var con = new GlideRecord("x_tkcsc_archive_contact_person");
+	con.get(current.u_contact_person);
+	correspondence.contact_person = {};
+	correspondence.contact_person.first_name = con.first_name.toString();
+	correspondence.contact_person.last_name = con.last_name.toString();
+	correspondence.contact_person.email = con.email.toString();
+	correspondence.contact_person.phone = con.phone.toString();
+	correspondence.contact_person.personal_number = con.personal_number.toString();
+	correspondence.contact_person.zip = con.zip.toString();
+	correspondence.contact_person.street = con.street.toString();
+	correspondence.contact_person.city = con.city.toString();
+	// Organisation
+	correspondence.organisation = current.u_organisation.toString();
+	var org = new GlideRecord("x_tkcsc_archive_organisation");
+	org.get( current.u_organisation);
+	correspondence.organisation = {};
+	correspondence.organisation.name = org.u_name.toString(); 
+	correspondence.organisation.organisation_number = org.u_organisation_number.toString(); 
+	correspondence.organisation.address = org.u_address.toString(); 
+	// Caseworker
+	var wor = new GlideRecord("x_tkcsc_archive_caseworker");
+	wor.get(current.u_caseworker);
+	correspondence.caseworker = {};
+	correspondence.caseworker.first_name = wor.first_name.toString();
+	correspondence.caseworker.last_name = wor.last_name.toString();
+	correspondence.caseworker.user_name = wor.u_identity.toString();
+	
+	var json = new global.JSON();
+	var payload = json.encode(correspondence);
+	
+	var ecc = new GlideRecord('ecc_queue');
+	ecc.initialize();
+
+	ecc.agent = "TIP-Archive";
+	ecc.topic = 'Archive';
+	ecc.name = 'correspondence.update';
+	ecc.queue = 'output';
+	ecc.state = 'ready';
+	ecc.source = gs.getProperty('instance_name');
+	ecc.payload = payload;
+	ecc.insert();
+
+})(current, previous);]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>dag.kvarme@symfoni-esm.com</sys_created_by>
+        <sys_created_on>2017-05-15 10:54:26</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>b8c7743cdbfab6009ded7e400f96195c</sys_id>
+        <sys_mod_count>16</sys_mod_count>
+        <sys_name>ECC_Update_Correspondence</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>true</sys_replace_on_upgrade>
+        <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+        <sys_update_name>sys_script_b8c7743cdbfab6009ded7e400f96195c</sys_update_name>
+        <sys_updated_by>LEVSYMKA@tka.local</sys_updated_by>
+        <sys_updated_on>2017-09-05 11:29:51</sys_updated_on>
+        <template/>
+        <when>before</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=b8c7743cdbfab6009ded7e400f96195c"/>
+    <sys_translated_text action="INSERT_OR_UPDATE">
+        <documentkey>b8c7743cdbfab6009ded7e400f96195c</documentkey>
+        <fieldname>message</fieldname>
+        <language>nb</language>
+        <sys_created_by>dag.kvarme@symfoni-esm.com</sys_created_by>
+        <sys_created_on>2017-05-15 10:54:26</sys_created_on>
+        <sys_id>b4c7743cdbfab6009ded7e400f96195d</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>dag.kvarme@symfoni-esm.com</sys_updated_by>
+        <sys_updated_on>2017-05-15 10:54:26</sys_updated_on>
+        <tablename>sys_script</tablename>
+        <value/>
+    </sys_translated_text>
+</record_update>

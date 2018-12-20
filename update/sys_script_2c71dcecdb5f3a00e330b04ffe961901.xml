@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>false</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>false</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>u_tree_removal_enquiry</collection>
+        <condition>current.u_melding_til_kunde.changes()</condition>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition/>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>Copy_to_Archive_Corr_update</name>
+        <order>600</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+	
+	//sys_id holders
+	var wor_sysid = "";
+	var cont_sysid = "";
+	var org_sysid = "";
+	var cas_sysid = "";
+
+	
+	cas_sysid = ArchiveUtils.getExisting(current.number, "u_original_number", "x_tkcsc_archive_cases");
+	
+	if (current.assigned_to){
+		wor_sysid = ArchiveUtils.getExisting(current.assigned_to, "u_original_sysid", "x_tkcsc_archive_caseworker");
+		
+		if(wor_sysid == "") {
+			wor_sysid = ArchiveUtils.createWorker(current.assigned_to, "sys_user", "x_tkcsc_archive_caseworker");
+		}
+	}
+	
+	if (current.u_customer_contact){
+		cont_sysid = ArchiveUtils.getExisting(current.u_customer_contact, "u_original_sysid", "x_tkcsc_archive_contact_person");
+		
+		if(cont_sysid == "") {
+		  cont_sysid =ArchiveUtils.createContact(current.u_customer_contact, "u_customer_contact", "x_tkcsc_archive_contact_person");
+
+		}
+	}
+	
+	if (current.u_customer_organization){
+		org_sysid = ArchiveUtils.getExisting(current.u_customer_organization, "u_original_sysid", "x_tkcsc_archive_organisation");
+		
+		if(org_sysid == "") {
+			org_sysid = ArchiveUtils.createOrganization(current.u_customer_organization, "core_company", "x_tkcsc_archive_organisation");
+
+		}
+	}
+
+		// Correspondence
+		var cor = new GlideRecord("x_tkcsc_archive_correspondence");
+		cor.initialize();
+		cor.u_title = "Korrespondanse: " + current.number;
+		var desc = current.u_melding_til_kunde;
+		cor.description = current.u_melding_til_kunde;
+		cor.u_direction = "I";
+		cor.u_send_date = current.opened_at;
+		cor.u_caseworker = wor_sysid;
+		cor.u_case = cas_sysid;
+		cor.u_contact_person = cont_sysid;
+		cor.u_organisation = org_sysid;
+		var cor_sysid = cor.insert();
+		copySpecificAttachments(current.u_attachments_to_send, 'x_tkcsc_archive_correspondence', cor_sysid);
+		cor.u_ecc_ready = true;
+		cor.update();
+
+
+})(current, previous);
+
+
+
+
+//COPY SPECIFIC ATTACHMENTS
+//GET ATTACHMENTS SELECTED LIST
+function copySpecificAttachments(check_list, to_table, to_sysid){
+	if(check_list){
+		var at_list = check_list;
+		var at_array =	at_list.split(',');
+		
+		//Only get attachments related to the record
+		var att_r = new GlideRecord('sys_attachment');
+		att_r.addQuery('table_sys_id', current.sys_id);
+		att_r.query();
+		
+		for(var i=0; i < at_array.length; i++){
+			att_r.get(at_array[i]);	
+			copyAttachments(current.sys_class_name, current.sys_id, to_table, to_sysid, att_r.file_name);	
+		}
+	}
+}
+
+
+//REWRITTEN FOR SPECIFIC ATTACHMENTS CHOSEN FROM THE LIST - WORKS IN SCOPED APPLICATION
+function copyAttachments(sourceTable, sourceID, targetTable, targetID, filename) {
+	var att = new GlideRecord("sys_attachment");
+	var userImagePrefix = "ZZ_YY";
+	var tables = [sourceTable, userImagePrefix + sourceTable];
+	att.addQuery("table_name", tables);
+	att.addQuery("table_sys_id", sourceID);
+	att.addQuery('file_name', filename);
+	att.query();
+	gs.info(att.getEncodedQuery());
+	gs.info("copying " + att.getRowCount());
+	
+	while (att.next()) {
+		//copy attachment record
+		var oldSysID = att.getUniqueValue();
+		var targetName = targetTable;
+		var sourceName = att.getValue("table_name");
+		if (sourceName.startsWith(userImagePrefix))
+			targetName = userImagePrefix + targetTable;
+		
+		att.setValue("table_name", targetName);
+		att.setValue("table_sys_id", targetID);
+		var newSysID = att.insert();
+		
+		//copy attachment doc records
+		var doc = new GlideRecord("sys_attachment_doc");
+		doc.addQuery("sys_attachment", oldSysID);
+		doc.query();
+		while (doc.next()) {
+			doc.setValue("sys_attachment", newSysID);
+			doc.insert();
+		}
+	}
+}]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>dag.kvarme@symfoni-esm.com</sys_created_by>
+        <sys_created_on>2017-06-08 09:59:56</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>2c71dcecdb5f3a00e330b04ffe961901</sys_id>
+        <sys_mod_count>6</sys_mod_count>
+        <sys_name>Copy_to_Archive_Corr_update</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+        <sys_update_name>sys_script_2c71dcecdb5f3a00e330b04ffe961901</sys_update_name>
+        <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+        <sys_updated_on>2017-06-26 12:50:59</sys_updated_on>
+        <template/>
+        <when>after</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=2c71dcecdb5f3a00e330b04ffe961901"/>
+    <sys_translated_text action="INSERT_OR_UPDATE">
+        <documentkey>2c71dcecdb5f3a00e330b04ffe961901</documentkey>
+        <fieldname>message</fieldname>
+        <language>nb</language>
+        <sys_created_by>dag.kvarme@symfoni-esm.com</sys_created_by>
+        <sys_created_on>2017-06-08 09:59:56</sys_created_on>
+        <sys_id>a471dcecdb5f3a00e330b04ffe961903</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>dag.kvarme@symfoni-esm.com</sys_updated_by>
+        <sys_updated_on>2017-06-08 09:59:56</sys_updated_on>
+        <tablename>sys_script</tablename>
+        <value/>
+    </sys_translated_text>
+</record_update>

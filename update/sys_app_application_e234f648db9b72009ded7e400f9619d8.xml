@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_app_application">
+    <sys_app_application action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <category display_value="Custom Applications">e0355b31ef303000a61d5a3615c0fb78</category>
+        <description/>
+        <device_type>browser</device_type>
+        <hint/>
+        <name>x_tkcsc_archive_tk archive</name>
+        <order>100</order>
+        <roles>x_tkcsc_archive.user</roles>
+        <sys_class_name>sys_app_application</sys_class_name>
+        <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+        <sys_created_on>2017-06-07 08:34:11</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>e234f648db9b72009ded7e400f9619d8</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>TK Archive</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+        <sys_update_name>sys_app_application_e234f648db9b72009ded7e400f9619d8</sys_update_name>
+        <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+        <sys_updated_on>2017-06-07 08:34:11</sys_updated_on>
+        <title>TK Archive</title>
+        <view_name/>
+    </sys_app_application>
+</record_update>

@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sys_script">
+    <sys_script action="INSERT_OR_UPDATE">
+        <abort_action>false</abort_action>
+        <access>package_private</access>
+        <action_delete>false</action_delete>
+        <action_insert>false</action_insert>
+        <action_query>false</action_query>
+        <action_update>true</action_update>
+        <active>true</active>
+        <add_message>false</add_message>
+        <advanced>true</advanced>
+        <change_fields>false</change_fields>
+        <client_callable>false</client_callable>
+        <collection>x_tkcsc_archive_cases</collection>
+        <condition/>
+        <description/>
+        <execute_function>false</execute_function>
+        <filter_condition table="x_tkcsc_archive_cases">u_case_done=false^EQ<item endquery="false" field="u_case_done" goto="false" newquery="false" operator="=" or="false" value="false"/>
+            <item endquery="true" field="" goto="false" newquery="false" operator="=" or="false" value=""/>
+        </filter_condition>
+        <is_rest>false</is_rest>
+        <message/>
+        <name>ECC_Update_Cases</name>
+        <order>10</order>
+        <priority>100</priority>
+        <rest_method/>
+        <rest_method_text/>
+        <rest_service/>
+        <rest_service_text/>
+        <rest_variables/>
+        <role_conditions/>
+        <script><![CDATA[(function executeRule(current, previous /*null when async*/) {
+	
+	case_file = {};
+	
+	// Syd_id
+	case_file.table_sys_id = current.sys_id.toString();
+	// Oppgavetype
+	case_file.case_type = current.u_case_type.toString();
+	// Title
+	case_file.title = current.u_title.toString();
+	// Oprettet
+	case_file.opened = current.u_opened_at.toString();
+	// Lukket
+	case_file.closed = current.u_closed_at.toString();
+	// Status
+	case_file.status = current.u_state.toString();
+	// Original numbe
+	case_file.number = current.u_original_number.toString();
+	// Cross reference
+	case_file.cross_reference = [];
+	var cross_list = current.u_cross_reference.getDisplayValue();
+	var cross_array = cross_list.split(",");
+	for (var i=0; i < cross_array.length; i++) {
+		case_file.cross_reference.push(cross_array[i]);
+	}
+	// Location
+	var loc = new GlideRecord("x_tkcsc_archive_location");
+	var loc_name = "";
+	var loc_address ="";
+	var loc_long ="";
+	var loc_lat = "";
+	var loc_gnr = "";
+	var loc_bnr = "";
+	if (current.u_archive_location){
+		loc.get(current.u_archive_location);
+		loc_name = loc.u_name.toString();
+		loc_address = loc.u_address.toString();
+		loc_long = loc.u_longitude.toString();
+		loc_lat = loc.u_latitude.toString();
+		loc_gnr = loc.u_gnr.toString();
+		loc_bnr = loc.u_bnr.toString();
+	}
+	case_file.location = {};
+	case_file.location.name = loc_name;
+	case_file.location.address = loc_address;
+	case_file.location.longitude = loc_long;
+	case_file.location.latitude = loc_lat;
+	case_file.location.gnr = loc_gnr;
+	case_file.location.bnr = loc_bnr;
+	case_file.location.coordinate_system = "WGS84";
+	
+	// Caseworker
+	var wor = new GlideRecord("x_tkcsc_archive_caseworkers");
+	var wor_first = "";
+	var wor_last = "";
+	var wor_use = "";
+	var depname = "";
+	if (current.u_caseworker){
+		wor.get(current.u_caseworker);
+		wor_first = wor.u_first_name.toString();
+		wor_last = wor.u_last_name.toString();
+		wor_use = wor.u_identity.toString();
+		var dep = new GlideRecord("cmn_department");
+		dep.get(wor.u_department);
+		if (dep.name)
+			depname = dep.name.toString();
+	}
+	case_file.caseworker = {};
+	case_file.caseworker.first_name = wor_first;
+	case_file.caseworker.last_name = wor_last;
+	case_file.caseworker.user_name = wor_use;
+	case_file.caseworker.department = depname;
+	
+	// Contact Person
+	var con_first = "";
+	var con_last = "";
+	var con_email = "";
+	var con_phone = "";
+	var con_pnr = "";
+	var con_zip = "";
+	var con_st = "";
+	var con_city = "";
+	if (current.u_sakspart){
+		var con = new GlideRecord("x_tkcsc_archive_contact_persons");
+		con.get(current.u_sakspart);
+		con_first = con.u_first_name.toString();
+		con_last = con.u_last_name.toString();
+		con_email = con.u_email.toString();
+		con_phone = con.u_mobile_phone.toString();
+		con_pnr = con.u_personal_number.toString();
+		con_zip = con.u_zip.toString();
+		con_st = con.u_street.toString();
+		con_city = con.u_city.toString();
+	}
+	case_file.contact_person = {};
+	case_file.contact_person.first_name = con_first;
+	case_file.contact_person.last_name = con_last;
+	case_file.contact_person.email = con_email;
+	case_file.contact_person.phone = con_phone;
+	case_file.contact_person.personal_number = con_pnr;
+	case_file.contact_person.zip = con_zip;
+	case_file.contact_person.street = con_st;
+	case_file.contact_person.city = con_city;
+	
+	// Organisation
+	var org_name = "";
+	var org_nr = "";
+	var org_add = "";
+	if (current.u_sakspart_org){
+		var org = new GlideRecord("x_tkcsc_archive_organisation");
+		org.get( current.u_sakspart_org);
+		org_name =  org.u_name.toString();
+gs.info("Org name: " + org_name);
+		org_nr = org.u_organisation_number.toString();
+		org_add = org.u_address.toString();
+	}
+	case_file.organisation = {};
+	case_file.organisation.name = org_name;
+	case_file.organisation.organisation_number = org_nr;
+	case_file.organisation.address = org_add;	
+	
+	var json = new global.JSON();
+	var payload = json.encode(case_file);
+	
+	var ecc = new GlideRecord('ecc_queue');
+	ecc.initialize();
+	
+	ecc.agent = "TIP-Archive";
+	ecc.topic = 'Archive';
+	ecc.name = 'case_file.update';
+	ecc.queue = 'output';
+	ecc.state = 'ready';
+	ecc.source = gs.getProperty('instance_name');
+	ecc.payload = payload;
+	ecc.insert();
+	
+})(current, previous);]]></script>
+        <sys_class_name>sys_script</sys_class_name>
+        <sys_created_by>dag.kvarme@symfoni-esm.com</sys_created_by>
+        <sys_created_on>2017-05-15 10:24:43</sys_created_on>
+        <sys_customer_update>true</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>a9f0bc78dbfab6009ded7e400f9619d2</sys_id>
+        <sys_mod_count>23</sys_mod_count>
+        <sys_name>ECC_Update_Cases</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+        <sys_update_name>sys_script_a9f0bc78dbfab6009ded7e400f9619d2</sys_update_name>
+        <sys_updated_by>dag.kvarme@symfoni-esm.com</sys_updated_by>
+        <sys_updated_on>2017-07-07 09:15:39</sys_updated_on>
+        <template/>
+        <when>before</when>
+    </sys_script>
+    <sys_translated_text action="delete_multiple" query="documentkey=a9f0bc78dbfab6009ded7e400f9619d2"/>
+    <sys_translated_text action="INSERT_OR_UPDATE">
+        <documentkey>a9f0bc78dbfab6009ded7e400f9619d2</documentkey>
+        <fieldname>message</fieldname>
+        <language>nb</language>
+        <sys_created_by>dag.kvarme@symfoni-esm.com</sys_created_by>
+        <sys_created_on>2017-05-15 10:24:43</sys_created_on>
+        <sys_id>a5f0bc78dbfab6009ded7e400f9619d3</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_updated_by>dag.kvarme@symfoni-esm.com</sys_updated_by>
+        <sys_updated_on>2017-05-15 10:24:43</sys_updated_on>
+        <tablename>sys_script</tablename>
+        <value/>
+    </sys_translated_text>
+</record_update>

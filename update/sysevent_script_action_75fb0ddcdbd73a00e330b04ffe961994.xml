@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update sys_domain="global" table="sysevent_script_action">
+    <sysevent_script_action action="INSERT_OR_UPDATE">
+        <active>false</active>
+        <condition_script/>
+        <description/>
+        <event_name>enquiry.commented</event_name>
+        <name>Archive Corr</name>
+        <order>300</order>
+        <script><![CDATA[ ArchiveUtils.createCorr(current.sys_id.toString(), "u_tree_removal_enquiry", "x_tkcsc_archive_correspondence", "U",current.comments.getJournalEntry(1).toString(),"",current.u_sensitiv_corr);
+//ArchiveUtils.createCorr("21ac7354db5f3a00e330b04ffe96193b", "u_tree_removal_enquiry", "x_tkcsc_archive_correspondence", "U", "test melding hardkodet");
+]]></script>
+        <synchronous>false</synchronous>
+        <sys_class_name>sysevent_script_action</sys_class_name>
+        <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+        <sys_created_on>2017-06-07 19:39:31</sys_created_on>
+        <sys_customer_update>false</sys_customer_update>
+        <sys_domain>global</sys_domain>
+        <sys_domain_path>/</sys_domain_path>
+        <sys_id>75fb0ddcdbd73a00e330b04ffe961994</sys_id>
+        <sys_mod_count>11</sys_mod_count>
+        <sys_name>Archive Corr</sys_name>
+        <sys_overrides/>
+        <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+        <sys_policy/>
+        <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+        <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+        <sys_update_name>sysevent_script_action_75fb0ddcdbd73a00e330b04ffe961994</sys_update_name>
+        <sys_updated_by>dag.kvarme@symfoni-esm.com</sys_updated_by>
+        <sys_updated_on>2017-06-16 10:51:09</sys_updated_on>
+    </sysevent_script_action>
+</record_update>

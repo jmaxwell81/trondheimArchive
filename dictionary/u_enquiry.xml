@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?><database>
+    <element attributes="email_client=true,hasLabels=true" audit="true" extends="task" label="Sak" max_length="40" name="u_enquiry" sizeclass="545" text_index="true" type="collection">
+        <element attributes="edge_encryption_enabled=true" label="Arkiver saken" max_length="40" name="u_archive_archive_case" type="boolean"/>
+    </element>
+</database>

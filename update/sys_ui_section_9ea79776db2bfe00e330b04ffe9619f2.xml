@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update>
+    <sys_ui_section caption="" section_id="9ea79776db2bfe00e330b04ffe9619f2" sys_domain="global" table="x_tkcsc_archive_cases" version="3" view="">
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_original_number</element>
+            <position>0</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>1f5b3f72db677600fc0ff9771d96195e</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_cross_reference</element>
+            <position>1</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>9f5b3f72db677600fc0ff9771d96195e</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.begin_split</element>
+            <position>2</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>135b3f72db677600fc0ff9771d96195f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type>.begin_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_caseworkers</element>
+            <position>3</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>935b3f72db677600fc0ff9771d96195f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.split</element>
+            <position>4</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>175b3f72db677600fc0ff9771d96195f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type>.split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_archive_location</element>
+            <position>5</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>975b3f72db677600fc0ff9771d96195f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.end_split</element>
+            <position>6</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>1b5b3f72db677600fc0ff9771d96195f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type>.end_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_case_type</element>
+            <position>7</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>9b5b3f72db677600fc0ff9771d96195f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_title</element>
+            <position>8</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>1f5b3f72db677600fc0ff9771d96195f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_closed_at</element>
+            <position>9</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>9f5b3f72db677600fc0ff9771d96195f</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_state</element>
+            <position>10</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>135b3f72db677600fc0ff9771d961960</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.begin_split</element>
+            <position>11</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>935b3f72db677600fc0ff9771d961960</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type>.begin_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_sakspart</element>
+            <position>12</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>175b3f72db677600fc0ff9771d961960</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_sakspart_org</element>
+            <position>13</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>975b3f72db677600fc0ff9771d961960</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.split</element>
+            <position>14</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>1b5b3f72db677600fc0ff9771d961960</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type>.split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_opened_at</element>
+            <position>15</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>9b5b3f72db677600fc0ff9771d961960</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>.end_split</element>
+            <position>16</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-28 13:03:58</sys_created_on>
+            <sys_id>1f5b3f72db677600fc0ff9771d961960</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 13:03:58</sys_updated_on>
+            <sys_user/>
+            <type>.end_split</type>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_caseworker</element>
+            <position>17</position>
+            <sys_created_by>kjetil.andenas@symfoni.com</sys_created_by>
+            <sys_created_on>2017-06-30 07:11:29</sys_created_on>
+            <sys_id>a3dd342fdba7b600fc0ff9771d9619fe</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>kjetil.andenas@symfoni.com</sys_updated_by>
+            <sys_updated_on>2017-06-30 07:11:29</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_element action="INSERT_OR_UPDATE">
+            <element>u_case_done</element>
+            <position>18</position>
+            <sys_created_by>dag.kvarme@symfoni-esm.com</sys_created_by>
+            <sys_created_on>2017-07-06 11:21:28</sys_created_on>
+            <sys_id>739038e5dbb3ba00fc0ff9771d9619c9</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_ui_formatter/>
+            <sys_ui_section caption="NULL" display_value="" name="x_tkcsc_archive_cases" sys_domain="global" view="Default view">9ea79776db2bfe00e330b04ffe9619f2</sys_ui_section>
+            <sys_updated_by>dag.kvarme@symfoni-esm.com</sys_updated_by>
+            <sys_updated_on>2017-07-06 11:21:28</sys_updated_on>
+            <sys_user/>
+            <type/>
+        </sys_ui_element>
+        <sys_ui_section action="INSERT_OR_UPDATE">
+            <caption/>
+            <header>false</header>
+            <name>x_tkcsc_archive_cases</name>
+            <roles/>
+            <sys_class_name>sys_ui_section</sys_class_name>
+            <sys_created_by>eivind.sandnes@symfoni-esm.com</sys_created_by>
+            <sys_created_on>2017-06-28 10:27:59</sys_created_on>
+            <sys_customer_update>true</sys_customer_update>
+            <sys_domain>global</sys_domain>
+            <sys_domain_path>/</sys_domain_path>
+            <sys_id>9ea79776db2bfe00e330b04ffe9619f2</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>x_tkcsc_archive_cases</sys_name>
+            <sys_overrides/>
+            <sys_package display_value="archive" source="x_tkcsc_archive">ff68d30ddba2f20072ccb34ffe96197d</sys_package>
+            <sys_policy/>
+            <sys_replace_on_upgrade>false</sys_replace_on_upgrade>
+            <sys_scope display_value="archive">ff68d30ddba2f20072ccb34ffe96197d</sys_scope>
+            <sys_update_name>sys_ui_section_9ea79776db2bfe00e330b04ffe9619f2</sys_update_name>
+            <sys_updated_by>eivind.sandnes@symfoni-esm.com</sys_updated_by>
+            <sys_updated_on>2017-06-28 10:27:59</sys_updated_on>
+            <sys_user/>
+            <title>true</title>
+            <view display_value="Default view" name="NULL">Default view</view>
+            <view_name/>
+        </sys_ui_section>
+    </sys_ui_section>
+</record_update>
